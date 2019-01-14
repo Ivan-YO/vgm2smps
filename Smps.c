@@ -3,70 +3,70 @@
 
 // Magic
 #define SMPS_NODAC 0x000900F2
-// Локальные функции...
+// Р›РѕРєР°Р»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё...
 /*
-Функция:
+Р¤СѓРЅРєС†РёСЏ:
 	void smps_cd_zero_common()
-Действие:
-	Обнуляет общие поля структуры cd.
-Параметры:
-Ошибки:
+Р”РµР№СЃС‚РІРёРµ:
+	РћР±РЅСѓР»СЏРµС‚ РѕР±С‰РёРµ РїРѕР»СЏ СЃС‚СЂСѓРєС‚СѓСЂС‹ cd.
+РџР°СЂР°РјРµС‚СЂС‹:
+РћС€РёР±РєРё:
 */
 static inline void smps_cd_zero_common();
 
 /*
-Функция:
+Р¤СѓРЅРєС†РёСЏ:
 	int smps_note_get_value(int note_index, int octave)
-Действие:
-	Конвертирует октаву и номер ноты в значение ноты SMPS.
-Параметры:
-	note_index -- номер ноты [0-12]
-	octave -- октава
-Ошибки:
+Р”РµР№СЃС‚РІРёРµ:
+	РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ РѕРєС‚Р°РІСѓ Рё РЅРѕРјРµСЂ РЅРѕС‚С‹ РІ Р·РЅР°С‡РµРЅРёРµ РЅРѕС‚С‹ SMPS.
+РџР°СЂР°РјРµС‚СЂС‹:
+	note_index -- РЅРѕРјРµСЂ РЅРѕС‚С‹ [0-12]
+	octave -- РѕРєС‚Р°РІР°
+РћС€РёР±РєРё:
 */
 int smps_note_get_value(int note_index, int octave);
 
 /*
-Функция:
+Р¤СѓРЅРєС†РёСЏ:
 	void smps_create_voice(uint8_t(*const voice)[SMPS_VOICE_SIZE],
 		const struct Ym2612Ins *const ins)
-Действие:
-	Конвертирует данные об инструменте в формат голосов SMPS 
-	и записывает в массив
-Параметры:
-	voice -- массив для записи
-	ins -- инструмент YM2612
-Ошибки:
+Р”РµР№СЃС‚РІРёРµ:
+	РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ РґР°РЅРЅС‹Рµ РѕР± РёРЅСЃС‚СЂСѓРјРµРЅС‚Рµ РІ С„РѕСЂРјР°С‚ РіРѕР»РѕСЃРѕРІ SMPS 
+	Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РІ РјР°СЃСЃРёРІ
+РџР°СЂР°РјРµС‚СЂС‹:
+	voice -- РјР°СЃСЃРёРІ РґР»СЏ Р·Р°РїРёСЃРё
+	ins -- РёРЅСЃС‚СЂСѓРјРµРЅС‚ YM2612
+РћС€РёР±РєРё:
 */
 void smps_create_voice(uint8_t(*const voice)[SMPS_VOICE_SIZE],
 	const struct Ym2612Ins *const ins);
 
 /*
-Функция:
+Р¤СѓРЅРєС†РёСЏ:
 	void smps_write_ym_vol(FILE *const f, const struct Ym2612State *const s)
-Действие:
-	Записывает громкость в SMPS
-Параметры:
-	f -- файл SMPS
-	s -- состояние YM2612
-Ошибки:
-	Возникающие при файловом вводе\выводе, E2BIG
+Р”РµР№СЃС‚РІРёРµ:
+	Р—Р°РїРёСЃС‹РІР°РµС‚ РіСЂРѕРјРєРѕСЃС‚СЊ РІ SMPS
+РџР°СЂР°РјРµС‚СЂС‹:
+	f -- С„Р°Р№Р» SMPS
+	s -- СЃРѕСЃС‚РѕСЏРЅРёРµ YM2612
+РћС€РёР±РєРё:
+	Р’РѕР·РЅРёРєР°СЋС‰РёРµ РїСЂРё С„Р°Р№Р»РѕРІРѕРј РІРІРѕРґРµ\РІС‹РІРѕРґРµ, E2BIG
 */
 static void smps_write_ym_vol(FILE *const f, const struct Ym2612State *const s);
 
 /*
-Функция:
+Р¤СѓРЅРєС†РёСЏ:
 	void smps_write_ym_pan(FILE *const f, const struct Ym2612State *const s)
-Действие:
-	Записывает панорамирование в SMPS
-Параметры:
-	f -- файл SMPS
-	s -- состояние YM2612
-Ошибки:
-	Возникающие при файловом вводе\выводе, E2BIG
+Р”РµР№СЃС‚РІРёРµ:
+	Р—Р°РїРёСЃС‹РІР°РµС‚ РїР°РЅРѕСЂР°РјРёСЂРѕРІР°РЅРёРµ РІ SMPS
+РџР°СЂР°РјРµС‚СЂС‹:
+	f -- С„Р°Р№Р» SMPS
+	s -- СЃРѕСЃС‚РѕСЏРЅРёРµ YM2612
+РћС€РёР±РєРё:
+	Р’РѕР·РЅРёРєР°СЋС‰РёРµ РїСЂРё С„Р°Р№Р»РѕРІРѕРј РІРІРѕРґРµ\РІС‹РІРѕРґРµ, E2BIG
 */
 static void smps_write_ym_pan(FILE *const f, const struct Ym2612State *const s);
-// дальше тупа л е н ь
+// РґР°Р»СЊС€Рµ С‚СѓРїР° Р» Рµ РЅ СЊ
 static void smps_write_ym_fms(FILE *const f, const struct Ym2612State *const s);
 static void smps_write_ym_ins_index(FILE *const f, const struct Ym2612State *const s);
 static void smps_write_ym_freq(FILE *const f, const struct Ym2612State *const s);
@@ -314,7 +314,7 @@ static void smps_write_ym_pan(FILE *const f, const struct Ym2612State *const s)
 {
 //#define SMPS_GET_AMSFMS(_ams, _fms) ((((_ams) & 3) | (((_fms) & 7) << 3)) & 0xFF)
 	int8_t *const pan = &(cd.fm.pan);
-	/*//AMS и FMS в SMPS н е п о д д е р ж и в а ю т с я
+	/*//AMS Рё FMS РІ SMPS РЅ Рµ Рї Рѕ Рґ Рґ Рµ СЂ Р¶ Рё РІ Р° СЋ С‚ СЃ СЏ
 	if (s->pan != NOCHANGE || s->ams != NOCHANGE || s->fms != NOCHANGE)
 	{
 		if (*pan == s->pan && *ams == s->ams && *fms == s->fms)
@@ -425,7 +425,7 @@ static void smps_write_ym_freq(FILE *const f, const struct Ym2612State *const s)
 	{
 		bool note_on = (cd.key_state == true && cd.vol != YM_VOL_MIN);
 		if (ym_enable_keyoff_notes)
-			note_on |= (cd.key_state == false && s->freq != NOCHANGE && s->key_state != false); // для тандерфорсаф
+			note_on |= (cd.key_state == false && s->freq != NOCHANGE && s->key_state != false); // РґР»СЏ С‚Р°РЅРґРµСЂС„РѕСЂСЃР°С„
 		
 		if (note_on)
 		{
@@ -775,7 +775,7 @@ static void smps_write_ym_chls(FILE *const f)
 
 	const struct VgmLogger *const logger = cd.global.logger;
 
-	// Проход по всем FM каналам
+	// РџСЂРѕС…РѕРґ РїРѕ РІСЃРµРј FM РєР°РЅР°Р»Р°Рј
 	for (int chl = 0; chl < YM_CHLS; ++chl)
 	{
 		int16_t loop_pitch_raw = 0;
@@ -823,9 +823,9 @@ static void smps_write_ym_chls(FILE *const f)
 		
 			if (s->key_noattack != NOCHANGE)
 			{
-				/* Костыль для того, чтоб исключить 
-				key_noattack если изменен только AMS
-				Ибо пока нет его реализации... */
+				/* РљРѕСЃС‚С‹Р»СЊ РґР»СЏ С‚РѕРіРѕ, С‡С‚РѕР± РёСЃРєР»СЋС‡РёС‚СЊ 
+				key_noattack РµСЃР»Рё РёР·РјРµРЅРµРЅ С‚РѕР»СЊРєРѕ AMS
+				РР±Рѕ РїРѕРєР° РЅРµС‚ РµРіРѕ СЂРµР°Р»РёР·Р°С†РёРё... */
 				bool ams_only_changed = s->ams != NOCHANGE &&
 					(s->freq == NOCHANGE &&
 						s->pan == NOCHANGE &&
@@ -1339,7 +1339,7 @@ void smps_export_to_file(const char *const file_path)
 
 	fseek(f, smps_header_size, SEEK_SET);
 
-	// Сюда будут ссылаться пустые каналы
+	// РЎСЋРґР° Р±СѓРґСѓС‚ СЃСЃС‹Р»Р°С‚СЊСЃСЏ РїСѓСЃС‚С‹Рµ РєР°РЅР°Р»С‹
 	*blank_chl_ptr = ftell(f);
 	fputc(FSMPSSTOP, f);
 
