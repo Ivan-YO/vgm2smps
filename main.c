@@ -5,8 +5,8 @@
 #include "Smps.h"
 
 // TODO:
-// стерео у DAC
-// человеческую обработку ошибок
+// СЃС‚РµСЂРµРѕ Сѓ DAC
+// С‡РµР»РѕРІРµС‡РµСЃРєСѓСЋ РѕР±СЂР°Р±РѕС‚РєСѓ РѕС€РёР±РѕРє
 #define CHARTOI(c) ((c) - '0')
 #define FPS_DEFAULT 60
 #define FPS_MAX 999
@@ -81,13 +81,13 @@ int main(int argc, char *argv[])
 
 	if (!output_file_path)
 	{
-		// Расширение, которое буде соединено с исходным путем
+		// Р Р°СЃС€РёСЂРµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ Р±СѓРґРµ СЃРѕРµРґРёРЅРµРЅРѕ СЃ РёСЃС…РѕРґРЅС‹Рј РїСѓС‚РµРј
 		static const char ext[] = ".bin";
-		// Ав друг надо будет делать Unicode...
+		// РђРІ РґСЂСѓРі РЅР°РґРѕ Р±СѓРґРµС‚ РґРµР»Р°С‚СЊ Unicode...
 		const int char_size = sizeof(ext[0]);
 		const int ext_len = ARRLENGTH(ext) - 1; // without '\0'
 		const int old_len = strlen(input_file_path);
-		// Длина конечного пути с расширением
+		// Р”Р»РёРЅР° РєРѕРЅРµС‡РЅРѕРіРѕ РїСѓС‚Рё СЃ СЂР°СЃС€РёСЂРµРЅРёРµРј
 		int new_len = 0;
 		output_file_path = malloc((old_len + ext_len) * char_size);
 		memcpy(output_file_path, input_file_path, 
