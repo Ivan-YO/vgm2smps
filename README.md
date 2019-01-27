@@ -1,6 +1,5 @@
 # vgm2smps
-The tool that converts VGM to SMPS (Sonic 1) that made for help you port music from games or own created.
-
+A tool that converts VGM to SMPS (Sonic 1) that was made to help you port music from other games or use your own VGMs.
 Features:
 
 Easy for use.
