@@ -329,6 +329,7 @@ static void vgm_ym2612_log()
 			{
 				if (empty) ++(logger.ym2612_state_count[chl]);
 				s_back->frames = frame_count;
+				//s_back->smp = parser.sample_count;
 			}
 		}
 
@@ -351,7 +352,7 @@ static void vgm_ym2612_log()
 err_range:
 	errno = ERANGE;
 	return;
-} // static void vgm_ym2612_log()
+} // void vgm_ym2612_log(const VgmParser *parser, VgmLogger *logger)
 
 static void vgm_sn76489_log()
 {
@@ -561,9 +562,9 @@ static void vgm_sn76489_log()
 err_range:
 	errno = ERANGE;
 	return;
-} // static void vgm_sn76489_log()
+}
 
-static void vgm_ym2612_dac_log(const struct VgmDacStream *const dac_stream)
+void vgm_ym2612_dac_log(const struct VgmDacStream *const dac_stream)
 {
 	uint32_t frame_count = parser.frame_count;
 	static uint32_t frame_count_prev = NOCHANGE;
@@ -612,8 +613,25 @@ static void vgm_ym2612_dac_log(const struct VgmDacStream *const dac_stream)
 err_range:
 	errno = ERANGE;
 	return;
-} // static void vgm_ym2612_dac_log(const struct VgmDacStream *const dac_stream)
+}
 
+void vgm_ym2612_dac_final_log(const struct VgmDacStream *const dac_stream)
+{
+	struct Ym2612 *const ym2612 = &(parser.ym2612);
+	bool dac_enabled = ym_enabled && ym_chls_enabled[YM_CHL_DAC];
+	const uint32_t frame_count = parser.frame_count;
+
+	if (dac_enabled && ym2612->dac_enabled)
+	{
+		struct Ym2612State *s_back =
+			&(logger.ym2612_state[YM_CHL_DAC]
+				[logger.ym2612_state_count[YM_CHL_DAC] - 1]);
+
+		s_back->freq = dac_stream->block_id + 1;
+		s_back->frames = frame_count;
+	}
+
+}
 
 void vgm_build_note_table()
 {
@@ -650,7 +668,7 @@ void vgm_build_note_table()
 
 	// Количества использований найденных частот в треке
 	// или их популярность в треке
-	//uint32_t note_popularity[NOTE_TABLE_WIDTH][NOTES_IN_OCT] = { 0 };
+	uint32_t note_popularity[NOTE_TABLE_WIDTH][NOTES_IN_OCT] = { 0 };
 	// Отклонение найденной ноты от идеальной
 	int16_t note_hz_offset[NOTE_TABLE_WIDTH][NOTES_IN_OCT] = { 0 };
 	// Ссылки...
@@ -665,7 +683,7 @@ void vgm_build_note_table()
 	for (int i = 0; i < logger.unique_freqs_count; ++i)
 	{
 		int16_t freq = (*unique_freqs)[i];
-		//uint32_t freq_count = (*unique_freqs_counts)[i];
+		uint32_t freq_count = (*unique_freqs_counts)[i];
 		int16_t hz = ym2612_convert_freq_to_hz(freq, NOTE_TABLE_DEFAULT_OCTAVE);
 //#ifndef NDEBUG
 //		if (hz < ref_hz_table[0][0] || hz > ref_hz_table[NOTE_TABLE_WIDTH - 1][NOTES_IN_OCT - 1])
@@ -679,7 +697,7 @@ void vgm_build_note_table()
 		// Ссылки...
 		const int16_t *const xy_ref_hz_table = &(ref_hz_table[y][x]);
 		int16_t *const xy_note_hz_offset = &(note_hz_offset[y][x]);
-		//uint32_t *const xy_note_popularity = &(note_popularity[y][x]);
+		uint32_t *const xy_note_popularity = &(note_popularity[y][x]);
 		int16_t *const xy_note_table = &((*note_table)[y][x]);
 		found_ref_note = *xy_ref_hz_table;
 		const int16_t cur_note_hz_offset = hz - found_ref_note;
@@ -694,7 +712,7 @@ void vgm_build_note_table()
 		if (write)
 		{
 			*xy_note_table = freq;
-			//*xy_note_popularity = freq_count;
+			*xy_note_popularity = freq_count;
 			*xy_note_hz_offset = cur_note_hz_offset;
 		}
 	} // for (int i = 0; i < logger.unique_freqs_count; ++i)
@@ -790,7 +808,7 @@ do \
 	} \
 } while (false)
 
-	// Парсинг всего до GD3 тэгов
+	/* Парсинг всего до GD3 тэгов */
 	while ((vgm_data + off) != vgm->gd3)
 	{
 		vgm_command = *(vgm_data + off); ++off;
@@ -799,23 +817,23 @@ do \
 		switch (vgm_command)
 		{
 		case 0x4F:
-			// Game Gear PSG stereo, write dd to port 0x06
+			/* Game Gear PSG stereo, write dd to port 0x06 */
 		{
-			// TODO: PSG STEREO SUPPORT
+			/* TODO: PSG STEREO SUPPORT */
 			uint8_t dd = 0;
 			dd = *(vgm_data + off); ++off;
 		}
 		break;
 
 		case 0x50:
-			// PSG(SN76489 / SN76496) write value dd
+			/* PSG(SN76489 / SN76496) write value dd */
 			sn76489_val = *(vgm_data + off); ++off;
 			if (sn76489)
 				sn76489_write(sn76489, sn76489_val);
 			break;
 
 		case 0x52:
-			// aa dd : YM2612 port 0, write value dd to register aa
+			/* aa dd : YM2612 port 0, write value dd to register aa */
 			ym2612_reg = *(vgm_data + off); ++off;
 			ym2612_val = *(vgm_data + off); ++off;
 
@@ -830,11 +848,11 @@ do \
 			if (ym2612)
 				ym2612_write_port1(ym2612, ym2612_reg, ym2612_val);
 			break;
-			// case 0x54: YM2151, write value dd to register aa
+			/* case 0x54: YM2151, write value dd to register aa*/
 		case 0x61:
-			// 0x61 nn nn : Wait n samples, n can range from 0 to 65535 (approx 1.49
-			// seconds).Longer pauses than this are represented by multiple
-			// wait commands.
+			/* 0x61 nn nn : Wait n samples, n can range from 0 to 65535 (approx 1.49
+			 * seconds).Longer pauses than this are represented by multiple
+			 * wait commands.*/
 		{
 			uint32_t seek = off;
 			uint16_t n = 0;
@@ -842,23 +860,23 @@ do \
 
 			if (n > 0)
 				RUN_LOG_FUNCS(n);
-		} // case 0x61:
-		break; // case 0x61:
+		} /* case 0x61: */
+		break; /* case 0x61: */
 
 		case 0x62:
-			// wait 735 samples(60th of a second), a shortcut for
-			// 0x61 0xdf 0x02 
+			/* wait 735 samples(60th of a second), a shortcut for
+			 * 0x61 0xdf 0x02 */
 			RUN_LOG_FUNCS(735);
-		break; // case 0x62:
+		break; /* case 0x62: */
 
 		case 0x63:
-			// wait 882 samples(50th of a second), a shortcut for
-			// 0x61 0x72 0x03 
+			/* wait 882 samples(50th of a second), a shortcut for
+			 * 0x61 0x72 0x03 */
 			RUN_LOG_FUNCS(882);
-		break; // case 0x63:
+		break; /* case 0x63: */
 
 		case 0x66:
-			// end of sound data
+			/* end of sound data */
 			gd3_parsing = true;
 			break;
 
@@ -915,8 +933,8 @@ do \
 			// ss = Stream ID
 			//  ff = Frequency(or Sample Rate, in Hz) at which the writes are done
 		{
-			//uint8_t s_id = *(vgm_data + off); 
-			++off;
+			//sizeof(struct VgmParser)
+			uint8_t s_id = *(vgm_data + off); ++off;
 			parser.dac_stream.sample_rate =
 				*((uint32_t *)(vgm_data + off)); off += 4;
 			break;
@@ -936,8 +954,7 @@ do \
 			//  8 ? -(bit 7) Loop(automatically restarts when finished)
 			//  ll = Data Length
 		{
-			//uint8_t s_id = *(vgm_data + off); 
-			++off;
+			uint8_t s_id = *(vgm_data + off); ++off;
 			parser.dac_stream.enabled = true;
 			off += 9;
 			break;
@@ -947,8 +964,7 @@ do \
 			//Stop Stream:
 			//  0x94 ss
 			//    ss = Stream ID
-			//uint8_t s_id = *(vgm_data + off); 
-			++off;
+			uint8_t s_id = *(vgm_data + off); ++off;
 			parser.dac_stream.enabled = false;
 			break;
 		}
@@ -962,7 +978,7 @@ do \
 			//  bit 0 - Loop(see command 0x93)
 		{
 			dac_enabled = ym_enabled && ym_chls_enabled[YM_CHL_DAC] && ym2612->dac_enabled;
-			//uint8_t s_id = 0;
+			uint8_t s_id = 0;
 			uint16_t block_id = 0;
 			uint8_t flags = 0;
 			struct VgmDacStream *s = &(parser.dac_stream);
@@ -971,8 +987,7 @@ do \
 			if (smps_length != 0 && *frame_count > smps_end)
 				break;
 
-			//s_id = *(vgm_data + off); 
-			++off;
+			s_id = *(vgm_data + off); ++off;
 			block_id = *((uint16_t *)(vgm_data + off)); off += 2;
 			flags = *(vgm_data + off); ++off;
 
@@ -995,7 +1010,7 @@ do \
 			//printf("%02X, frames = %010d\n", (int)vgm_command, frame_count);
 		}
 		break;
-		} // switch (vgm_command) 
+		} /* switch (vgm_command) */
 
 		switch (vgm_command & 0xF0)
 		{
@@ -1018,7 +1033,7 @@ do \
 		}
 		break;
 		}
-	} // while ((vgm_data + off) != vgm->gd3)
+	} /* while ((vgm_data + off) != vgm->gd3) */
 	
 	// DAC final update
 	FRAME_COUNT_SETUP();
@@ -1055,7 +1070,7 @@ void vgm_logger_remove_blank_chls()
 			if (blank_states == *ch_state_count)
 				*ch_state_count = 0;
 		}
-	} // for (int chl = 0; chl < STATES_YM_SIZE; ++chl)
+	}
 
 	for (int chl = 0; chl < STATES_SN_SIZE; ++chl)
 	{
@@ -1078,7 +1093,7 @@ void vgm_logger_remove_blank_chls()
 			if (blank_states == *ch_state_count)
 				*ch_state_count = 0;
 		}
-	} // for (int chl = 0; chl < STATES_SN_SIZE; ++chl)
+	}
 
 	{
 		bool blank = false;
@@ -1123,7 +1138,7 @@ static void vgm_logger_frames_to_deltas()
 			struct Ym2612State *s = &((*ch_s)[i]);
 			s->frames = lengths[i - 1];
 		}
-	} // for (uint32_t chl = 0; chl < STATES_YM_SIZE; ++chl)
+	}
 
 	// SN76489 general channel states
 	for (uint32_t chl = 0; chl < STATES_SN_SIZE; ++chl)
@@ -1142,7 +1157,7 @@ static void vgm_logger_frames_to_deltas()
 			struct Sn76489State *s = &((*ch_s)[i]);
 			s->frames = lengths[i - 1];
 		}
-	} // for (uint32_t chl = 0; chl < STATES_SN_SIZE; ++chl)
+	}
 
 	//SN76489's noise states
 	struct Sn76489NoiseState(*ch_s)[STATES_MAX_COUNT] =
@@ -1161,7 +1176,7 @@ static void vgm_logger_frames_to_deltas()
 	}
 
 	free(lengths);
-} // static void vgm_logger_frames_to_deltas()
+}
 
 void vgm_logger_apply_external_note_table(int16_t(*const note_table)[NOTE_TABLE_WIDTH][NOTES_IN_OCT])
 {
@@ -1209,4 +1224,4 @@ void vgm_parser_export_dac_samples(char *output_folder)
 	}
 	// Освобождаем выделенную память
 	free(output_file_name);
-} // void vgm_parser_export_dac_samples(char *output_folder)
+}

@@ -1,5 +1,5 @@
-#ifndef VGM_PARSER_H
-#define VGM_PARSER_H
+#ifndef _VGM_PARSER_H
+#define _VGM_PARSER_H
 
 #include "pch.h"
 #include "Vgm.h"
@@ -9,7 +9,7 @@
 #define SAMPLE_RATE 44100
 
 // Максимальное количество состояний
-#define STATES_MAX_COUNT 20000 
+#define STATES_MAX_COUNT 20000
 // Максимальное количество инструментов YM2612
 #define INS_MAX_COUNT 256
 // Максимальное количество найденных уникальных частот в YM2612

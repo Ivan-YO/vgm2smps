@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Vgm.h"
+#include <byteswap.h>
 //#define ZLIB_WINAPI
-#include "Zlib/zlib.h"
+//#include "Zlib/zlib.h"
+#include <zlib.h>
 
 static uint32_t get_gz_file_length(FILE* hFile)
 {
@@ -12,7 +14,7 @@ static uint32_t get_gz_file_length(FILE* hFile)
 	ret_val = fread(&gz_head, 0x02, 0x01, hFile);
 	if (ret_val >= 1)
 	{
-		gz_head = _byteswap_ushort(gz_head);
+		gz_head = __bswap_16(gz_head);
 		if (gz_head != 0x1F8B)
 		{
 			ret_val = 0;	// no .gz signature - treat as normal file
@@ -60,16 +62,16 @@ void vgm_create_from_file(const char *const file_path, struct Vgm *const vgm)
 
 	if (vgmf_ident != VGM_IDENT)
 		goto err_notvgm;
-	
+
 	vgm->bufsize = file_size;
 	vgm->buffer = malloc(file_size);
-	
+
 	if (!vgm->buffer)
 		goto err_badalloc;
 
 	gzrewind(gzf);
 	int res = gzread(gzf, vgm->buffer, file_size);
-	
+
 	if (res < 0)
 	{
 		gzclose(gzf);
@@ -82,7 +84,7 @@ void vgm_create_from_file(const char *const file_path, struct Vgm *const vgm)
 	return;
 
 err_notvgm:
-	errno = ENOTVGM;
+	errno = EVGMNOTSUPPORTED;
 	return;
 
 err_badalloc:
@@ -133,7 +135,4 @@ void vgm_read_info(struct Vgm *const vgm)
 
 	vgm->ym2612_enabled = vgm->ym2612_clock != 0;
 	vgm->sn76489_enabled = vgm->sn76489_clock != 0;
-
-	if (!vgm->ym2612_enabled && !vgm->sn76489_enabled)
-		errno = EVGMNOTSUPPORTED;
 }

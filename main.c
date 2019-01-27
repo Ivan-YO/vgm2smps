@@ -5,8 +5,8 @@
 #include "Smps.h"
 
 // TODO:
-// стерео у DAC
-// человеческую обработку ошибок
+// Stereophonic DAC
+// Decent error handling
 #define CHARTOI(c) ((c) - '0')
 #define FPS_DEFAULT 60
 #define FPS_MAX 999
@@ -26,10 +26,11 @@ uint32_t smps_length = 0;
 uint32_t smps_start_offset = 0;
 bool ym_enable_keyoff_notes = false;
 bool dac_export = false;
+bool alt_ins = false;
 
 void path_remove_extension(char *const path);
 void path_remove_file_name(char *const path);
-int commandline_parce(int argc, char **argv);
+int commandline_parse(int argc, char **argv);
 void free_all(void);
 
 struct Vgm vgm;
@@ -37,7 +38,7 @@ struct Vgm vgm;
 int main(int argc, char *argv[])
 {
 	bool success = false;
-	if (commandline_parce(argc, argv))
+	if (commandline_parse(argc, argv))
 		return 0;
 
 	vgm_create_from_file(input_file_path, &vgm);
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 	{
 		switch (errno)
 		{
-		case ENOTVGM:
+		case EVGMNOTSUPPORTED:
 			printf("Error! This is not a VGM file!\n");
 			break;
 		case EBADALLOC:
@@ -81,17 +82,21 @@ int main(int argc, char *argv[])
 
 	if (!output_file_path)
 	{
-		// Расширение, которое буде соединено с исходным путем
+		// File extension to be concatenated with original path
 		static const char ext[] = ".bin";
-		// Ав друг надо будет делать Unicode...
+
+		// What if I'll need UTF-16?
 		const int char_size = sizeof(ext[0]);
 		const int ext_len = ARRLENGTH(ext) - 1; // without '\0'
 		const int old_len = strlen(input_file_path);
-		// Длина конечного пути с расширением
+
+		// Length of path with extension
 		int new_len = 0;
 		output_file_path = malloc((old_len + ext_len) * char_size);
-		memcpy(output_file_path, input_file_path, 
-			old_len + char_size); // with '\0'
+		memcpy(output_file_path,
+			   input_file_path,
+			   old_len + char_size); // with '\0'
+
 		path_remove_extension(output_file_path);
 		new_len = strlen(output_file_path);
 		strcat(output_file_path, ext);
@@ -118,7 +123,7 @@ int main(int argc, char *argv[])
 
 	if (!output_file_path_was_setuped)
 		free(output_file_path);
-	
+
 	if (success) printf("Done!\n");
 	return 0;
 }
@@ -128,20 +133,25 @@ void free_all()
 	vgm_free(&vgm);
 }
 
-int commandline_parce(int argc, char **argv)
+int commandline_parse(int argc, char **argv)
 {
-#define FLAG_COUNT 9
+#define FLAG_COUNT 10
 	static const int argbase = 1;
 	int found_flag_index = 0;
 	int str_pos = 0;
 	bool flags_used[FLAG_COUNT] = { false };
 	static const char *const flag_strings[FLAG_COUNT] =
 	{
-		"-fm_enable=", "-fm_chls=",
-		"-psg_enable=", "-psg_chls=",
+		"-fm_enable=",
+		"-fm_chls=",
+		"-psg_enable=",
+		"-psg_chls=",
 		"-fm_enable_keyoff_notes=",
-		"-dac_export=", "-fps=", "-length=",
-		"-start="
+		"-dac_export=",
+		"-fps=",
+		"-length=",
+		"-start=",
+		"-altins="
 	};
 
 	int flag_string_lengths[FLAG_COUNT];
@@ -158,7 +168,8 @@ int commandline_parce(int argc, char **argv)
 		F_DAC_EXPORT,
 		F_FPS,
 		F_LENGTH,
-		F_START
+		F_START,
+		F_ALTINS
 	};
 
 	if (argc == argbase)
@@ -199,6 +210,10 @@ int commandline_parce(int argc, char **argv)
 			"    Default: 0\n"
 			"  [-dac_export=0]\n"
 			"    Enable found DAC samples from the VGM file. Saves into input file folder.\n"
+			"  [-altins=0]\n"
+			"    Enable altarnate \"smart\" instrument and note detecting."
+			"    If real frequency (Hz) of note is lower then 0 octave, \n"
+			"    instrument makes lower and notes makes upper in octave.\n"
 		);
 		return 1;
 	}
@@ -298,6 +313,13 @@ int commandline_parce(int argc, char **argv)
 		{
 			char *num_str = &(arg[str_pos]);
 			smps_start_offset = atoi(num_str);
+		}
+		break;
+
+		case F_ALTINS:
+		{
+            int c = arg[str_pos];
+			alt_ins = !!CHARTOI(c);
 		}
 		break;
 		} // switch (f)

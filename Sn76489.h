@@ -49,7 +49,7 @@ struct Sn76489
 	uint32_t clock;
 	int8_t ch4_mode;
 	int8_t noise_type;
-	// callbacks
+	/* callbacks */
 	void(*on_set_tone)(const struct Sn76489 *const sn76489, int chl);
 	void(*on_set_volume)(const struct Sn76489 *const sn76489, int chl);
 	void(*on_set_noise_type)(const struct Sn76489 *const sn76489);

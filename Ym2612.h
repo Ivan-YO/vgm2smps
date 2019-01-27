@@ -23,17 +23,17 @@ enum
 
 struct Ym2612Op
 {
-  uint8_t   dt;    // detune 
-  uint8_t   mul;   // multiple 
-  int8_t    tl;    // total level 
-  uint8_t   rs;    // rate scaling 
-  uint8_t   ar;    // attack rate 
-  uint8_t   d1r;   // first decay rate 
-  bool      am;    // amplitude modulation 
-  uint8_t   d2r;   // secondary decay rate 
-  uint8_t   sl;    // secondary amplitude/sustain level
-  uint8_t   rr;    // release rate
-  uint8_t   ssgeg; // SSGEG
+  uint8_t   dt;    /* detune */
+  uint8_t   mul;   /* multiple */
+  int8_t   tl;     /* total level */
+  uint8_t   rs;    /* rate scaling */
+  uint8_t   ar;    /* attack rate */
+  uint8_t   d1r;   /* first decay rate */
+  bool am;         /* amplitude modulation */
+  uint8_t   d2r;   /* secondary decay rate */
+  uint8_t   sl;    /* secondary amplitude/sustain level */
+  uint8_t   rr;    /* release rate */
+  uint8_t   ssgeg; /* SSGEG */
 };
 
 struct Ym2612Ins
@@ -62,7 +62,7 @@ struct Ym2612
   bool             lfo_enabled;
   uint8_t          lfo_freq;
   bool             ch3_spec;
-  // callbacks
+  /* callbacks */
   void (*on_set_freq)(const struct Ym2612 *const ym2612, int chl);
   void (*on_set_ins)(const struct Ym2612 *const ym2612, int chl, int op);
   void (*on_set_key_state)(const struct Ym2612 *const ym2612, int chl);

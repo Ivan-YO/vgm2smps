@@ -8,14 +8,14 @@ do \
 { \
 	size_t __size = _DIM1_LEN; \
 	_INDEX_VAR = 0; \
-	_T __const = _CONST; \
-	_T __dist = abs((_ARR)[0] - __const); \
+	_T __cst = _CONST; \
+	_T __dist = abs((_ARR)[0] - __cst); \
 	_T __dist_prev = __dist; \
 	_T __dist_temp; \
 	for (size_t __x__ = 1; __x__ < __size; ++__x__) \
 	{ \
 		if (__dist_prev < __dist) break; \
-		__dist_temp = abs((_ARR)[__x__] - __const); \
+		__dist_temp = abs((_ARR)[__x__] - __cst); \
 		if (__dist_temp < __dist) \
 		{ \
 			__dist = __dist_temp; \
@@ -35,8 +35,8 @@ do \
 	size_t __size2 = _DIM2_LEN; \
 	_DIM1_INDEX_VAR = 0; \
 	_DIM2_INDEX_VAR = 0; \
-	_T __const = _CONST; \
-	_T __dist = abs((_ARR)[0][0] - __const); \
+	_T __cst = _CONST; \
+	_T __dist = abs((_ARR)[0][0] - __cst); \
 	_T __dist_prev = __dist; \
 	_T __dist_temp; \
 	bool __find = false; \
@@ -50,7 +50,7 @@ do \
 		{ \
 			if (__dist_prev < __dist) __find = true; \
 			if (__find) break; \
-			__dist_temp = abs((_ARR)[__y__][__x__] - __const); \
+			__dist_temp = abs((_ARR)[__y__][__x__] - __cst); \
 			if (__dist_temp < __dist) \
 			{ \
 				__dist = __dist_temp; \
@@ -71,12 +71,12 @@ do \
 { \
 	size_t __size = _DIM1_LEN; \
 	_INDEX_VAR = 0; \
-	_T __const = _CONST; \
-	_T __dist = abs((_ARR)[0] - __const); \
+	_T __cst = _CONST; \
+	_T __dist = abs((_ARR)[0] - __cst); \
 	_T __dist_temp; \
 	for (size_t __x__ = 1; __x__ < __size; ++__x__) \
 	{ \
-		__dist_temp = abs((_ARR)[__x__] - __const); \
+		__dist_temp = abs((_ARR)[__x__] - __cst); \
 		if (__dist_temp < __dist) \
 		{ \
 			__dist = __dist_temp; \
@@ -95,8 +95,8 @@ do \
 	size_t __size2 = _DIM2_LEN; \
 	_DIM1_INDEX_VAR = 0; \
 	_DIM2_INDEX_VAR = 0; \
-	_T __const = _CONST; \
-	_T __dist = abs((_ARR)[0][0] - __const); \
+	_T __cst = _CONST; \
+	_T __dist = abs((_ARR)[0][0] - __cst); \
 	_T __dist_temp; \
 	size_t __y__, __x__; \
 	__y__ = 0; \
@@ -105,7 +105,7 @@ do \
 	{ \
 		for (; __x__ < __size2; ++__x__) \
 		{ \
-			__dist_temp = abs((_ARR)[__y__][__x__] - __const); \
+			__dist_temp = abs((_ARR)[__y__][__x__] - __cst); \
 			if (__dist_temp < __dist) \
 			{ \
 				__dist = __dist_temp; \
