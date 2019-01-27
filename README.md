@@ -8,7 +8,7 @@ Easy for use.
   DAC samples export.
   Ability to set exported channels and song start offset and its length.
   Ability to set parsing speed in FPS.
-  Alternate "smart" instrument detecting. Final note's frequency is lower, than SMPS supports, all notes transposes in octave up,
+  Alternate "smart" instrument detecting. If final note's frequency is lower, than SMPS supports, all notes transposes in octave up,
   but instrument's multiply transpose down (make instrument lower).
 
 Known bugs:
