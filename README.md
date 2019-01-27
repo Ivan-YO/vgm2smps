@@ -23,7 +23,7 @@ A tool that converts VGM to SMPS (Sonic 1) that was made to help you port music 
 
 
 ## *Known bugs* 
-  -Sometimes (but rarely) notes may be wrong (frequences). 
+  -Sometimes (but rarely) notes may be wrong (frequencies). 
   
   
   -Sometimes notes are wrong if -altins is used. 
