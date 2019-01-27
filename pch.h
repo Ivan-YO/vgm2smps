@@ -31,5 +31,13 @@ enum { NOCHANGE = -1 };
 #define NOTES_IN_OCT 12
 
 #define SIGN(x) ((x > 0) - (x < 0))
+// From <byteswap.h>
+/* Swap bytes in 16-bit value. */
+#define __bswap_constant_16(x) \
+((uint16_t) ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8)))
 
+/* Swap bytes in 32-bit value. */
+#define __bswap_constant_32(x) \
+((((x) & 0xff000000u) >> 24) | (((x) & 0x00ff0000u) >> 8) \
+| (((x) & 0x0000ff00u) << 8) | (((x) & 0x000000ffu) << 24))
 #endif

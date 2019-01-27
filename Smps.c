@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Smps.h"
-#include <byteswap.h>
 
 // Magic
 #define SMPS_NODAC 0x000900F2
@@ -1041,7 +1040,7 @@ static void smps_write_ym_chls(FILE *const f)
         if (errno != errno_prev)
             return;
 
-        smps_header.fm[chl].chl_ptr = __bswap_16(*chl_ptr);
+        smps_header.fm[chl].chl_ptr = __bswap_constant_16(*chl_ptr);
 
         if (!(ym_enabled && ym_chls_enabled[chl])) continue;
 
@@ -1140,7 +1139,7 @@ static void smps_write_ym_chls(FILE *const f)
 
                 fputc(FSMPSJUMP, f);
                 *loop_ptr = (*loop_ptr - ftell(f) - 1);
-                *loop_ptr = __bswap_16(*loop_ptr);
+                *loop_ptr = __bswap_constant_16(*loop_ptr);
                 fwrite(loop_ptr, sizeof(*loop_ptr), 1, f);
             } // if (loop)
             else
@@ -1254,7 +1253,7 @@ static void smps_write_sn_chls(FILE *const f)
         if (errno != errno_prev)
             return;
 
-        smps_header.psg[chl].chl_ptr = __bswap_16(*chl_ptr);
+        smps_header.psg[chl].chl_ptr = __bswap_constant_16(*chl_ptr);
 
         if (!(sn_enabled && sn_chls_enabled[chl])) continue;
 
@@ -1304,7 +1303,7 @@ static void smps_write_sn_chls(FILE *const f)
 
                 fputc(FSMPSJUMP, f);
                 *loop_ptr = (*loop_ptr - ftell(f) - 1);
-                *loop_ptr = __bswap_16(*loop_ptr);
+                *loop_ptr = __bswap_constant_16(*loop_ptr);
                 fwrite(loop_ptr, sizeof(*loop_ptr), 1, f);
             } /* if (loop) */
             else
@@ -1359,7 +1358,7 @@ static void smps_write_sn_noise(FILE *const f)
     if (errno != errno_prev)
         return;
 
-    smps_header.psg[2].chl_ptr = __bswap_16(*chl_ptr);
+    smps_header.psg[2].chl_ptr = __bswap_constant_16(*chl_ptr);
 
     if (!(sn_enabled && sn_chls_enabled[chl])) return;
 
@@ -1413,7 +1412,7 @@ static void smps_write_sn_noise(FILE *const f)
 
             fputc(FSMPSJUMP, f);
             *loop_ptr = (*loop_ptr - ftell(f) - 1);
-            *loop_ptr = __bswap_16(*loop_ptr);
+            *loop_ptr = __bswap_constant_16(*loop_ptr);
             fwrite(loop_ptr, sizeof(*loop_ptr), 1, f);
         }
         else
@@ -1436,7 +1435,7 @@ static void smps_write_ym_voices(FILE *const f)
         if (errno != errno_prev)
             return;
 
-        smps_header.voice_ptr = __bswap_16(smps_header.voice_ptr);
+        smps_header.voice_ptr = __bswap_constant_16(smps_header.voice_ptr);
 
         for (int i = 0; i < logger->ins_count; ++i)
         {
@@ -1486,7 +1485,7 @@ void smps_write_dac(FILE *const f)
     if (errno != errno_prev)
         return;
 
-    smps_header.dac.ptr = __bswap_16(*chl_ptr);
+    smps_header.dac.ptr = __bswap_constant_16(*chl_ptr);
 
     if (!(ym_enabled && ym_chls_enabled[chl])) return;
 
@@ -1535,7 +1534,7 @@ void smps_write_dac(FILE *const f)
         {
             fputc(FSMPSJUMP, f);
             *loop_ptr = (*loop_ptr - ftell(f) - 1);
-            *loop_ptr = __bswap_16(*loop_ptr);
+            *loop_ptr = __bswap_constant_16(*loop_ptr);
             fwrite(loop_ptr, sizeof(*loop_ptr), 1, f);
         } // if (loop)
         else
@@ -1592,7 +1591,7 @@ void smps_export_to_file(const char *const file_path)
     smps_header.tempo_div = 1;
 
     if (!(*dac_enabled))
-        smps_header.dac.full_val = __bswap_32(SMPS_NODAC);
+        smps_header.dac.full_val = __bswap_constant_32(SMPS_NODAC);
 
     fseek(f, smps_header_size, SEEK_SET);
 

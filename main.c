@@ -211,7 +211,7 @@ int commandline_parse(int argc, char **argv)
 			"  [-dac_export=0]\n"
 			"    Enable found DAC samples from the VGM file. Saves into input file folder.\n"
 			"  [-altins=0]\n"
-			"    Enable altarnate \"smart\" instrument and note detecting."
+			"    Enable altarnate \"smart\" instrument and note detecting.\n"
 			"    If real frequency (Hz) of note is lower then 0 octave, \n"
 			"    instrument makes lower and notes makes upper in octave.\n"
 		);
