@@ -18,7 +18,7 @@ A tool that converts VGM to SMPS (Sonic 1) that was made to help you port music 
   -Ability to set parsing speed in FPS.
   
   
-  -Alternate "smart" instrument detecting. If final note's frequency is lower, than SMPS supports, all notes transposes in octave up,
+  -Alternate "smart" instrument detecting mode. If final note's frequency is lower, than SMPS supports, all notes transposes in octave up,
   but instrument's multiply transpose down (make instrument lower).
 
 
