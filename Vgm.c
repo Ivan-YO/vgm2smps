@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Vgm.h"
-#include <byteswap.h>
 //#define ZLIB_WINAPI
 //#include "Zlib/zlib.h"
 #include <zlib.h>
@@ -14,7 +13,7 @@ static uint32_t get_gz_file_length(FILE* hFile)
 	ret_val = fread(&gz_head, 0x02, 0x01, hFile);
 	if (ret_val >= 1)
 	{
-		gz_head = __bswap_16(gz_head);
+		gz_head = __bswap_constant_16(gz_head);
 		if (gz_head != 0x1F8B)
 		{
 			ret_val = 0;	// no .gz signature - treat as normal file

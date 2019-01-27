@@ -10,7 +10,7 @@
 #define _PCH_H
 
 #define _CRT_SECURE_NO_WARNINGS // for fwrite, printf etc...
-//#define _CRT_NONSTDC_NO_WARNINGS	// for posix fucs for zlib
+#define _CRT_NONSTDC_NO_WARNINGS	// for posix fucs for zlib
 
 #include <stdio.h>
 #include <string.h>
