@@ -43,7 +43,6 @@ int16_t sn76489_tone_table[][NOTES_IN_OCT] =
 /////////////////////   Structures and types definitions   /////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma pack(push, 1)
 struct
 {
     uint16_t   voice_ptr;
@@ -73,7 +72,6 @@ struct
         uint16_t voice;
     } psg[SN_CHLS - 1];
 } smps_header;
-#pragma pack(pop)
 
 struct SmpsModulationState
 {
@@ -1630,21 +1628,15 @@ void smps_export_to_file(const char *const file_path)
     fseek(f, 0, SEEK_SET);
 
 
-    if (!(*dac_enabled))
-    {
-        fwrite(&smps_header, sizeof(smps_header), 1, f);
-    }
-    else
-    {
-        fwrite(&(smps_header.voice_ptr), sizeof(smps_header.voice_ptr), 1, f);
-        fputc(smps_header.fm_cnt, f);
-        fputc(smps_header.psg_cnt, f);
-        fputc(smps_header.tempo_div, f);
-        fputc(smps_header.tempo_mod, f);
-        fwrite(&(smps_header.dac), sizeof(smps_header.dac), 1, f);
-        fwrite(smps_header.fm, sizeof(smps_header.fm[0]), YM_CHLS - 1, f);
-        fwrite(smps_header.psg, sizeof(smps_header.psg), 1, f);
-    }
+    fwrite(&(smps_header.voice_ptr), sizeof(smps_header.voice_ptr), 1, f);
+    fputc(smps_header.fm_cnt, f);
+    fputc(smps_header.psg_cnt, f);
+    fputc(smps_header.tempo_div, f);
+    fputc(smps_header.tempo_mod, f);
+    fwrite(&(smps_header.dac), sizeof(smps_header.dac), 1, f);
+    fwrite(smps_header.fm, sizeof(smps_header.fm[0]),
+        (*dac_enabled) ? YM_CHLS - 1 : YM_CHLS, f);
+    fwrite(smps_header.psg, sizeof(smps_header.psg), 1, f);
 end:
     fclose(f);
 } // void smps_export_to_file(const char *const file_path)
