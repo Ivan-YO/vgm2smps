@@ -4,7 +4,7 @@ The tool that converts VGM to SMPS (Sonic 1) that made for help you port music f
 Features:
 
 Easy for use.
-  DAC sequense detecting (only for optimized VGM's with data banks as Defle Mask or SMPSPlay exports).
+  DAC sequense detecting (only for optimized VGMs with data banks as Defle Mask or SMPSPlay exports).
   DAC samples export.
   Ability to set exported channels and song start offset and its length.
   Ability to set parsing speed in FPS.
