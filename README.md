@@ -12,7 +12,7 @@ A tool that converts VGM to SMPS (Sonic 1) that was made to help you port music 
   -DAC samples export.
   
   
-  -Ability to set exported channels and song start offset and its length.
+  -Ability to choose exported channels and song start offset and its length.
   
   
   -Ability to set parsing speed in FPS.
